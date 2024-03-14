@@ -22,4 +22,4 @@ EXPOSE 3010
 
 # Run the AFFiNE command as the container's entry point
 
-CMD ["sh", "-c", "docker compose -f ./.github/deployment/self-host/compose.yaml up"]
+# CMD ["sh", "-c", "docker compose -f ./.github/deployment/self-host/compose.yaml up"]
