@@ -1,6 +1,12 @@
 # Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
+# Install dependencies required by the install script
+# Ensuring the update, install, and cleanup are in a single RUN to make sure they are not discarded
+RUN apt-get update && apt-get install -y \
+    curl \
+    sudo \
+ && rm -rf /var/lib/apt/lists/*
 
 # Copy the install.sh script from your local repository to the Docker image
 COPY install.sh /install.sh
