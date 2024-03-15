@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f compose.yaml
+    kompose.version: 1.32.0 (765fde254)
+  labels:
+    io.kompose.service: affine
+  name: affine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: affine
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f compose.yaml
+        kompose.version: 1.32.0 (765fde254)
+      labels:
+        io.kompose.network/self-host-default: "true"
+        io.kompose.service: affine
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - node ./scripts/self-host-predeploy && node ./dist/index.js
+          env:
+            - name: AFFINE_ADMIN_EMAIL
+              value: "datascience@police.nsw.gov.au"
+            - name: AFFINE_ADMIN_PASSWORD
+              value: "affine" 
+            - name: AFFINE_CONFIG_PATH
+              value: /affine-config  # Adjusted path
+            - name: DATABASE_URL
+              value: postgres://affine:affine@postgres:5432/affine
+            - name: NODE_ENV
+              value: production
+            - name: NODE_OPTIONS
+              value: '"--import=./scripts/register.js"'
+            - name: REDIS_SERVER_HOST
+              value: redis
+          image: ghcr.io/toeverything/affine-graphql:stable
+          name: affine-selfhosted
+          ports:
+            - containerPort: 3010
+              protocol: TCP
+            - containerPort: 5555
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /affine-config  # Adjusted path
+              name: config-volume
+            - mountPath: /affine-storage
+              name: affine-claim1
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          emptyDir: {}
+        - name: affine-claim1
+          persistentVolumeClaim:
+            claimName: affine-claim1
