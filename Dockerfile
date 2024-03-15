@@ -12,4 +12,5 @@ RUN pip install ollama
 EXPOSE 11434
 
 # Run the label-studio command as the container's entry point
-CMD ["ollama", "pull", "llama2"]
+CMD ["python", "-m", "ollama", "pull", "llama2"]
+
