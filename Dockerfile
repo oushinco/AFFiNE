@@ -2,7 +2,7 @@
 FROM python:3.9-slim
 
 # Install curl and other dependencies you might need
-RUN apt-get update && apt-get install -y curl
+# RUN apt-get update && apt-get install -y curl
 
 # Install Ollama
 RUN curl -fsSL https://ollama.com/install.sh | sh
